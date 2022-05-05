@@ -15,6 +15,8 @@ const cache = expressRedisCache({
     expire: 5
 });
 
+//
+
 // Cache error handling
 cache.on('error', function (error) {
     throw new Error('Cache error!:' + error);
@@ -38,7 +40,10 @@ const PORT = process.env.PORT || 3000;
 const REDIS_PORT = process.env.PORT || 6379;
 
 // Create Redis client
-const client = redis.createClient(REDIS_PORT);
+// const client = redis.createClient(REDIS_PORT);
+
+// Create Redis client
+const client = redis.createClient({url: process.env.REDIS_URL});
 
 // Mount JSON middleware
 app.use(express.json());
