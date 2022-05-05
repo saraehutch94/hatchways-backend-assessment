@@ -1,8 +1,8 @@
-// Heroku Deployment Link
-// 
+// *** All tests for API requests made in test.txt file ***
 
 // Require dependencies
 const express = require("express");
+const morgan = require("morgan");
 const axios = require("axios");
 
 // Initialize Express application
@@ -21,6 +21,9 @@ const PORT = process.env.PORT || "3000";
 
 // Mount JSON middleware
 app.use(express.json());
+
+// Mount morgan middleware
+app.use(morgan("dev"));
 
 // Define routes
 
