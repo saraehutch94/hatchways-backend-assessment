@@ -43,7 +43,14 @@ const REDIS_PORT = process.env.PORT || 6379;
 // const clientPort = redis.createClient(REDIS_PORT);
 
 // Create Redis client
-const client = redis.createClient({url: process.env.REDIS_URL});
+
+if (process.env.REDISTOGO_URL) {
+    const rtg = require("url").parse(process.env.REDISTOGO_URL);
+    const redis = redis.createClient(rtg.port, rtg.hostname); 
+    redis.auth(rtg.auth.split(":")[1]);
+} else {
+    const client = redis.createClient({url: process.env.REDIS_URL});
+}
 
 // Mount JSON middleware
 app.use(express.json());
