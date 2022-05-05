@@ -8613,7 +8613,27 @@ Via: 1.1 vegur
   "error": "direction query is invalid"
 }
 
-25.) Posts route with invalid tags parameter, but valid sortBy and direction params:
+25.) Posts route with valid tags parameter, but both sortBy and direction are invalid:
+
+https://hatchway-backend-assignment.herokuapp.com/api/posts?tags=health&direction=des&sortBy=I
+
+Response:
+
+HTTP/1.1 400 Bad Request
+Server: Cowboy
+Connection: close
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 57
+Etag: W/"39-bIOzI7Qqcqoie6DAPgtVv5y2WmE"
+Date: Thu, 05 May 2022 21:11:46 GMT
+Via: 1.1 vegur
+
+{
+  "error": "Neither sortBy or direction queries are valid"
+}
+
+26.) Posts route with invalid tags parameter, but valid sortBy and direction params:
 
 https://hatchway-backend-assignment.herokuapp.com/api/posts?tags=hi&direction=desc&sortBy=likes
 
@@ -8633,7 +8653,7 @@ Via: 1.1 vegur
   "error": "No results found with tag(s) provided"
 }
 
-26.) Posts route with no tags parameter provided, but valid sortBy and direction params:
+27.) Posts route with no tags parameter provided, but valid sortBy and direction params:
 
 https://hatchway-backend-assignment.herokuapp.com/api/posts?tags=&direction=desc&sortBy=likes
 https://hatchway-backend-assignment.herokuapp.com/api/posts?direction=desc&sortBy=likes
