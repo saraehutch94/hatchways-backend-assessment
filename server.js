@@ -14,7 +14,7 @@ const apiURL = "https://api.hatchways.io/assessment/blog/posts/";
 require("dotenv").config();
 
 // Save port value to variable
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || "3000";
 
 // Mount JSON middleware
 app.use(express.json());
