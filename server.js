@@ -1,3 +1,6 @@
+// Heroku Deployment Link
+// 
+
 // Require dependencies
 const express = require("express");
 const axios = require("axios");
@@ -33,6 +36,7 @@ app.get("/api/ping", async (req, res) => {
         // return success message object if API call is successful
         return res.json(successMessage);
     })
+
     .catch(error => {
         // return error message if API call was not successful
         return res.send(error);
