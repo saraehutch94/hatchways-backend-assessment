@@ -44,10 +44,10 @@ app.use(morgan("dev"));
 
 // Check for errors with cache library
 
-// Un-comment below:
+// // Un-comment below:
 // cache.on('error', function (error) {
 //     throw new Error('Cache error!: ' + error);
-//   });
+// });
 
 // Define routes (without cache --> cache routes commented out below
 
@@ -163,7 +163,11 @@ app.get("/api/posts", async (req, res) => {
                 if (req.query.direction === "desc") filteredArray.reverse();
                 // otherwise, direction provided was ascending/"asc" --> leave it the way it is
                 // return either the ascending or descending filteredArray
-                return res.json(filteredArray);
+                // within a posts object
+                const posts = {
+                    posts: filteredArray
+                }
+                return res.json(posts);
             // if neither sortBy or direction queries provided are valid values
             } else if ((req.query.sortBy != "id" && req.query.sortBy != "likes" && req.query.sortBy != "reads" && req.query.sortBy != "popularity") && (req.query.direction != "asc" && req.query.direction != "desc")) {
                 const bothQueryError = {
@@ -197,7 +201,11 @@ app.get("/api/posts", async (req, res) => {
                 return a[req.query.sortBy] - b[req.query.sortBy];
             });
             // return sorted ascending filteredArray
-            return res.json(filteredArray);
+            // within a posts object
+            const posts = {
+                posts: filteredArray
+            }
+            return res.json(posts);
         // if only direction query is provided
         // default sortBy is id (sortBy query was not provided)
         } else if (req.query.direction) {
@@ -215,11 +223,19 @@ app.get("/api/posts", async (req, res) => {
             // if the direction provided is descending/"desc", reverse the sorted-by-id array
             if (req.query.direction === "desc") filteredArray.reverse();
             // return either ascending or descending filteredArray
-            return res.json(filteredArray);
+            // within a posts object
+            const posts = {
+                posts: filteredArray
+            }
+            return res.json(posts);
         } else {
             // only tags query were provided (required) but not direction or sortBy queries
             // return original filteredArray
-            return res.json(filteredArray);
+            // within a posts object
+            const posts = {
+                posts: filteredArray
+            }
+            return res.json(posts);
         }
     // if no tags query are provided
     } else {
@@ -255,7 +271,7 @@ app.get("/api/posts", async (req, res) => {
 // Cache posts route
 
 // Un-comment below:
-// app.get("/api/posts", cache.route(), async (req, res) => {
+// app.get("/api/posts/cache", cache.route(), async (req, res) => {
 
 //     // error message objects (used multiple times
 //     // when checking for queries in conditions below)
@@ -347,7 +363,11 @@ app.get("/api/posts", async (req, res) => {
 //                 if (req.query.direction === "desc") filteredArray.reverse();
 //                 // otherwise, direction provided was ascending/"asc" --> leave it the way it is
 //                 // return either the ascending or descending filteredArray
-//                 return res.json(filteredArray);
+//                 // within a posts object
+//                 const posts = {
+//                     posts: filteredArray
+//                 };
+//                 return res.json(posts);
 //             // if neither sortBy or direction queries provided are valid values
 //             } else if ((req.query.sortBy != "id" && req.query.sortBy != "likes" && req.query.sortBy != "reads" && req.query.sortBy != "popularity") && (req.query.direction != "asc" && req.query.direction != "desc")) {
 //                 const bothQueryError = {
@@ -381,7 +401,11 @@ app.get("/api/posts", async (req, res) => {
 //                 return a[req.query.sortBy] - b[req.query.sortBy];
 //             });
 //             // return sorted ascending filteredArray
-//             return res.json(filteredArray);
+//             // within a posts object
+//             const posts = {
+//                 posts: filteredArray
+//             };
+//             return res.json(posts);
 //         // if only direction query is provided
 //         // default sortBy is id (sortBy query was not provided)
 //         } else if (req.query.direction) {
@@ -399,11 +423,19 @@ app.get("/api/posts", async (req, res) => {
 //             // if the direction provided is descending/"desc", reverse the sorted-by-id array
 //             if (req.query.direction === "desc") filteredArray.reverse();
 //             // return either ascending or descending filteredArray
-//             return res.json(filteredArray);
+//             // within a posts object
+//             const posts = {
+//                 posts: filteredArray
+//             };
+//             return res.json(posts);
 //         } else {
 //             // only tags query were provided (required) but not direction or sortBy queries
 //             // return original filteredArray
-//             return res.json(filteredArray);
+//             // within a posts object
+//             const posts = {
+//                 posts: filteredArray
+//             };
+//             return res.json(posts);
 //         }
 //     // if no tags query are provided
 //     } else {

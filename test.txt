@@ -8698,7 +8698,16 @@ version of this caching library does indeed work. When this project
 is reviewed, the localhost:3000 version should work. Make sure that
 the caching dependencies, client creation, error handling and cache
 routes are un-commented in server.js (uncommented for Heroku hosted
-version). I applied my caching tests to this localhost:3000 version
+version). After these are un-commented, you will need to install
+redis and express-redis-cache npm packages:
+
+npm install redis express-redis-cache
+
+and then run the redis server:
+
+redis-server
+
+I applied my caching tests to this localhost:3000 version
 of my API and these were my results:
 
 First = first request (before caching)
