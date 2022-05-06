@@ -1,3 +1,5 @@
+Step 3: Testing API routes
+
 Here is where I conducted my tests for my Node.js API.
 I deployed my API to Heroku for testing and for you to view
 and make requests from as well. The two main routes for this
@@ -24,6 +26,9 @@ and search "Rest". You will see "Rest Client: Send Request".
 window, displaying the response.
 
 Below, I will be pasting the routes I tested and their responses.
+
+After my tests for the routes, I will be posting my tests for my cache
+routes (Step 4 - Bonus)
 
 1.) Ping route
 
@@ -8673,3 +8678,217 @@ Via: 1.1 vegur
 {
   "error": "Tags query is required"
 }
+
+----------------------------------------------
+
+Step 4 (Bonus): Cache Route testing
+
+For server-side caching of this API, I utilized an npm library
+for redis called express-redis-cache. Unfortunately, these caching
+routes do not work in the Heroku hosted version. I tried to make
+the connection to Heroku Redis utilizing the database info: host,
+port, and authentication password, using this line of code:
+
+const cache = require('express-redis-cache')({
+  host: String, port: Number, auth_pass: REDIS_PASSWORD
+});
+
+But my connection was unsuccessful. However, the localhost:3000
+version of this caching library does indeed work. When this project
+is reviewed, the localhost:3000 version should work. Make sure that
+the caching dependencies, client creation, error handling and cache
+routes are un-commented in server.js (uncommented for Heroku hosted
+version). I applied my caching tests to this localhost:3000 version
+of my API and these were my results:
+
+First = first request (before caching)
+Second = second request (cached request)
+
+1.) Ping route:
+
+localhost:3000/api/ping/cache
+
+First: 232ms
+Second: 5-11ms
+
+2.) Posts route:
+
+localhost:3000/api/posts/cache
+
+First: 19-21ms
+Second: 5-8ms
+
+3.) Posts route with one tags parameter:
+
+localhost:3000/api/posts/cache?tags=health
+
+First: 162-244ms
+Second: 9-19ms
+
+4.) Posts route with two tags parameters:
+
+localhost:3000/api/posts/cache?tags=health,tech
+
+First: 295-338ms
+Second: 9-21ms
+
+5.) Posts route with three tags parameters:
+
+localhost:3000/api/posts/cache?tags=health,tech,history
+
+First: 452-491ms
+Second: 6-11ms
+
+6.) Posts route with invalid tags parameter
+
+localhost:3000/api/posts/cache?tags=hello
+
+First: 140-166ms
+Second: 5-8ms
+
+7.) Posts route with two tags parameters and optional sortBy parameter (likes):
+
+localhost:3000/api/posts/cache?tags=health,science&sortBy=likes
+
+First: 309-331ms
+Second: 5-10ms
+
+8.) Posts route with one tags parameter and optional sortBy parameter (id):
+
+localhost:3000/api/posts/cache?tags=history&sortBy=id
+
+First: 157-170ms
+Second: 5-11ms
+
+9.) Posts route with one tags parameter and optional sortBy parameter (reads):
+
+localhost:3000/api/posts/cache?tags=science&sortBy=reads
+
+First: 148-174ms
+Second: 9-13ms
+
+10.) Posts route with three tags parameters and optional sortBy parameter (popularity):
+
+localhost:3000/api/posts/cache?tags=health,science,tech&sortBy=popularity
+
+First: 442-445ms
+Second: 9-10ms
+
+11.) Posts route with one tags parameter and optional direction parameter (desc):
+
+localhost:3000/api/posts/cache?tags=health&direction=desc
+
+First: 154-165ms
+Second: 7-10ms
+
+12.) Posts route with one tags parameter and optional direction parameter (asc):
+
+localhost:3000/api/posts/cache?tags=science&direction=asc
+
+First: 164-203ms
+Second: 5-10ms
+
+13.) Posts route with two tags parameters and both optional sortBy (likes) and direction (asc) parameters:
+
+localhost:3000/api/posts/cache?tags=science,design&sortBy=likes&direction=asc
+
+First: 272-350ms
+Second: 5-7ms
+
+14.) Posts route with one tags parameter and both optional sortBy (likes) and direction (desc) parameters:
+
+localhost:3000/api/posts/cache?tags=science&sortBy=likes&direction=desc
+
+First: 152-208ms
+Second: 6-9ms
+
+15.) Posts route with three tags parameters and both optional sortBy (popularity) and direction (asc) parameters:
+
+localhost:3000/api/posts/cache?tags=science,design,history&sortBy=popularity&direction=asc
+
+First: 432-460ms
+Second: 5-10ms
+
+16.) Posts route with one tags parameter and both optional sortBy (popularity) and direction (desc) parameters:
+
+localhost:3000/api/posts/cache?tags=history&sortBy=popularity&direction=desc
+
+First: 154-187ms
+Second: 6-12ms
+
+17.) Posts route with two tags parameters and both optional sortBy (reads) and direction (asc) parameters:
+
+localhost:3000/api/posts/cache?tags=history,culture&sortBy=reads&direction=asc
+
+First: 277-299ms
+Second: 5-11ms
+
+18.) Posts route with one tags parameter and both optional sortBy (reads) and direction (desc) parameters:
+
+localhost:3000/api/posts/cache?tags=history&sortBy=reads&direction=desc
+
+First: 147-189ms
+Second: 7-14ms
+
+19.) Posts route with one tags parameter and both optional sortBy (id) and direction (asc) parameters:
+
+localhost:3000/api/posts/cache?tags=tech&sortBy=id&direction=asc
+
+First: 149-164ms
+Second: 6-21ms
+
+20.) Posts route with two tags parameters and both optional sortBy (id) and direction (desc) parameters:
+
+localhost:3000/api/posts/cache?tags=science,health&sortBy=id&direction=desc
+
+First: 277-328ms
+Second: 6-8ms
+
+21.) Posts route with one tags parameter and both optional parameters, but sortBy is invalid value:
+
+localhost:3000/api/posts/cache?tags=science&sortBy=i&direction=desc
+
+First: 146-165ms
+Second: 7-14ms
+
+22.) Posts route with one tags parameter and both optional parameters, but direction is invalid value:
+
+localhost:3000/api/posts/cache?tags=science&sortBy=id&direction=des
+
+First: 151-165ms
+Second: 7-10ms
+
+23.) Posts route with one tags parameter and only sortBy parameter, but sortBy is invalid value:
+
+localhost:3000/api/posts/cache?tags=science&sortBy=i
+
+First: 152-192ms
+Second: 6-8ms
+
+24.) Posts route with one tags parameter and only direction parameter, but direction parameter is invalid value:
+
+localhost:3000/api/posts/cache?tags=science&direction=des
+
+First: 158-172ms
+Second: 4-7ms
+
+25.) Posts route with incorrect tags value but correct direction and sortBy values:
+
+localhost:3000/api/posts/cache?tags=hi&direction=desc&sortBy=likes
+
+First: 143-169ms
+Second: 4-7ms
+
+26.) Posts route with no tags parameters specified:
+
+localhost:3000/api/posts/cache?tags=&direction=desc&sortBy=likes
+
+First: 7-11ms
+Second: 5-6ms
+
+27.) Posts route with no tags parameter specified:
+
+localhost:3000/api/posts/cache?direction=desc&sortBy=likes
+
+First: 10-13ms
+Second: 4-10ms
