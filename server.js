@@ -5,6 +5,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const axios = require("axios");
+const redis = require("redis");
+const cache = require("express-redis-cache")({
+    expire: 86400
+});
 
 // Initialize Express application
 const app = express();
@@ -26,10 +30,37 @@ app.use(express.json());
 // Mount morgan middleware
 app.use(morgan("dev"));
 
+// Create Redis client
+const client = redis.createClient();
+
+// Check for errors with cache library
+cache.on('error', function (error) {
+    throw new Error('Cache error!: ' + error);
+  });
+
 // Define routes
 
 // Ping route
 app.get("/api/ping", async (req, res) => {
+    // make asynchronous API call using axios --> check for successful API call
+    await axios.get(apiURL + "?tag=''")
+    .then(response => {
+        const successMessage = {
+            "success": true
+        };
+        console.log(response.data);
+        // return success message object if API call is successful
+        return res.json(successMessage);
+    })
+
+    .catch(error => {
+        // return error message if API call was not successful
+        return res.send(error);
+    })
+});
+
+// Cache ping route
+app.get("/api/ping/cache", cache.route(), async (req, res) => {
     // make asynchronous API call using axios --> check for successful API call
     await axios.get(apiURL + "?tag=''")
     .then(response => {
