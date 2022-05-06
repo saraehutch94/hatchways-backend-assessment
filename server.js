@@ -5,6 +5,10 @@
 const express = require("express");
 const morgan = require("morgan");
 const axios = require("axios");
+const redis = require("redis");
+const cache = require("express-redis-cache")({
+    host: "ec2-34-192-109-79.compute-1.amazonaws.com", port: 19710, auth_pass: process.env.REDIS_PASSWORD 
+});
 
 // Initialize Express application
 const app = express();
@@ -25,6 +29,11 @@ app.use(express.json());
 
 // Mount morgan middleware
 app.use(morgan("dev"));
+
+// Cache error message
+cache.on('error', function (error) {
+    throw new Error('Cache error!: ' + error);
+  });
 
 // Define routes
 
